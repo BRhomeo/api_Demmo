@@ -27,7 +27,9 @@ class ContrillerApi extends HandleApi {
         } else {
           throw Exception('No data');
         }
+        print('then');
       });
+      print(' after then');
     } catch (e) {
       print(" general Error :  $e");
     }

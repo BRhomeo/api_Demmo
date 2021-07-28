@@ -4,7 +4,7 @@
    <application
         android:label="api_demmo"
         android:icon="@mipmap/ic_launcher"
-        android:userClearTextTraffic="true">
+      >
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
