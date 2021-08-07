@@ -36,6 +36,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final ContrillerApi api = ContrillerApi();
   Future _getLoresData() async {
     List<LoreModel> _getLore = [];
+
     _loreList.add(await api.getLore(loreHash: '3188244430'));
     _loreList.add(await api.getLore(loreHash: '2261683515'));
     _loreList.add(await api.getLore(loreHash: '2368205079'));

@@ -17,21 +17,28 @@ class _BooksPageState extends State<BooksPage> {
   final ContrillerApi api = ContrillerApi();
   _BooksPageState({required this.booksHashList});
 
-  Future _getBooksData() async {
+  Future<List<BookModel>> _getBooksData() async {
     List<BookModel> _list = [];
 
-    booksHashList.forEach((element) async {
-      BookModel tst =
-          await api.getBook(bookHash: '${element["presentationNodeHash"]} ');
-      print('HERE _getBooksData .......... $tst');
-      // print(
-      //     'HERE _getBooksData .......... ${element["presentationNodeHash"]} ');
-      // _booksList.add(tst);
-      //  _list.add(tst);
+    // booksHashList.forEach((element) async {
+    //   BookModel tst =
+    //       await api.getBook(bookHash: '${element["presentationNodeHash"]} ');
+    //   _booksList.add(tst);
+    //   _list.add(tst);
+    //   print(tst.name);
+    //   //  print('inside for loop');
+    // });
 
-      // print('_getBooksData ${tst.displayProperties?['name']}');
-    });
+    for (int i = 0; i < booksHashList.length; i++) {
+      BookModel tst = await api.getBook(
+          bookHash: '${booksHashList[i]["presentationNodeHash"]} ');
+      _booksList.add(tst);
+      _list.add(tst);
 
+      print('inside for loop');
+    }
+
+    print('outside for loop');
     return _list;
   }
 
@@ -42,39 +49,32 @@ class _BooksPageState extends State<BooksPage> {
         title: Text('Books Page'),
       ),
       body: Center(
-        child: FutureBuilder(
+        child: FutureBuilder<List<BookModel>>(
           future: _getBooksData(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              return Column(
-                children: [
-                  Text('data $_booksList'),
-                  ListView.builder(
-                      itemCount: _booksList.length,
-                      itemBuilder: (context, index) {
-                        return TextButton(
-                          onPressed: () async {
-                            //_loreList[loreIndex].children
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: ListTile(
-                              // leading: Container(
-                              //   width: 50,
-                              //   color: Colors.black,
-                              //   child: Image.network(
-                              //       '${EndPoint.baseUrl}${_booksList[index].originalIcon}'),
-                              // ),
-                              leading: Text('data'),
-                              title: SelectableText(_booksList[index]
-                                      .displayProperties?['name'] ??
-                                  'null!'),
-                            ),
+              return ListView.builder(
+                  itemCount: _booksList.length,
+                  itemBuilder: (context, index) {
+                    return TextButton(
+                      onPressed: () async {
+                        //_loreList[loreIndex].children
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ListTile(
+                          leading: Container(
+                            width: 50,
+                            color: Colors.black,
+                            child: Image.network(
+                                '${EndPoint.baseUrl}${_booksList[index].originalIcon}'),
                           ),
-                        );
-                      }),
-                ],
-              );
+                          title:
+                              SelectableText(_booksList[index].name ?? 'null!'),
+                        ),
+                      ),
+                    );
+                  });
             } else
               return Center(
                 child: Text('loding...'),
