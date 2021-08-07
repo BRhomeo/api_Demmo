@@ -1,5 +1,5 @@
-import 'package:api_demmo/package/model/model-controller-genral.dart';
+import 'package:api_demmo/package/model/lore_model.dart';
 
 abstract class HandleApi {
-  Future<ModelControllerGenral> getGames();
+  Future<LoreModel> getLore({required String loreHash});
 }

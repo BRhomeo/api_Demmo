@@ -2,18 +2,22 @@ import 'dart:convert';
 
 import 'package:api_demmo/api/end_point.dart';
 import 'package:api_demmo/api/handel_api.dart';
-import 'package:api_demmo/package/model/model-controller-genral.dart';
+import 'package:api_demmo/package/model/book_model.dart';
+import 'package:api_demmo/package/model/lore_model.dart';
 import 'package:http/http.dart' as http;
 
 class ContrillerApi extends HandleApi {
-  int timeOut = 100;
-  Map<String, String> headersGlobal = {"Content-Type": "application/json"};
-  @override
-  Future<ModelControllerGenral> getGames() async {
-    String url = EndPoint.baseUrl + EndPoint.games;
+  int timeOut = 150;
+  Map<String, String> headersGlobal = {
+    "Content-Type": "application/json",
+    "X-API-KEY": "885c4899d33444b4a43740264e49351b",
+  };
+
+  Future<LoreModel> getLore({required String loreHash}) async {
+    String url = EndPoint.baseUrl + EndPoint.games + loreHash;
     Uri _url = Uri.parse(url);
 
-    late ModelControllerGenral _data;
+    late LoreModel obj;
     try {
       await http
           .get(_url, headers: headersGlobal)
@@ -22,17 +26,44 @@ class ContrillerApi extends HandleApi {
         //! if there is an error
         if (value.statusCode == 200) {
           var json = jsonDecode(value.body);
-          print(json);
-          _data = ModelControllerGenral.fromJson(json);
+
+          obj = LoreModel.fromJson(json['Response']);
+
+          obj.children?.forEach((element) {
+            //  print(element['presentationNodeHash']);
+          });
         } else {
           throw Exception('No data');
         }
-        print('then');
       });
-      print(' after then');
     } catch (e) {
       print(" general Error :  $e");
     }
-    return _data;
+    return obj;
+  }
+
+  Future<BookModel> getBook({required String bookHash}) async {
+    String url = EndPoint.baseUrl + EndPoint.games + bookHash;
+    Uri _url = Uri.parse(url);
+
+    late BookModel obj;
+    try {
+      await http
+          .get(_url, headers: headersGlobal)
+          .timeout(Duration(seconds: timeOut))
+          .then((value) {
+        //! if there is an error
+        if (value.statusCode == 200) {
+          var json = jsonDecode(value.body);
+
+          obj = BookModel.fromJson(json['Response']);
+        } else {
+          throw Exception('No data');
+        }
+      });
+    } catch (e) {
+      print(" general Error :  $e");
+    }
+    return obj;
   }
 }
