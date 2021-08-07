@@ -1,30 +1,30 @@
 import 'package:api_demmo/api/conroller_api.dart';
 import 'package:api_demmo/api/end_point.dart';
-import 'package:api_demmo/package/model/book_model.dart';
-import 'package:api_demmo/package/views/cards_page.dart';
+import 'package:api_demmo/package/model/card_model.dart';
+import 'package:api_demmo/package/views/lore_page.dart';
 import 'package:flutter/material.dart';
 
-class BooksPage extends StatefulWidget {
-  List hashList = [];
-  BooksPage({Key? key, required this.hashList}) : super(key: key);
+class CardsPage extends StatefulWidget {
+  List hash = [];
+  CardsPage({Key? key, required this.hash}) : super(key: key);
 
   @override
-  _BooksPageState createState() => _BooksPageState(booksHashList: hashList);
+  _CardsPageState createState() => _CardsPageState(cardsHashsList: hash);
 }
 
-class _BooksPageState extends State<BooksPage> {
-  List booksHashList = [];
-  List<BookModel> _booksList = [];
+class _CardsPageState extends State<CardsPage> {
+  List cardsHashsList;
+  List<CardModel> _cardsList = [];
   final ContrillerApi api = ContrillerApi();
-  _BooksPageState({required this.booksHashList});
+  _CardsPageState({required this.cardsHashsList});
 
-  Future<List<BookModel>> _getBooksData() async {
-    List<BookModel> _list = [];
+  Future<List<CardModel>> _getBooksData() async {
+    List<CardModel> _list = [];
 
-    for (int i = 0; i < booksHashList.length; i++) {
-      BookModel tst = await api.getBook(
-          bookHash: '${booksHashList[i]["presentationNodeHash"]} ');
-      _booksList.add(tst);
+    for (int i = 0; i < cardsHashsList.length; i++) {
+      CardModel tst =
+          await api.getCard(cardHash: '${cardsHashsList[i]["recordHash"]} ');
+      _cardsList.add(tst);
       _list.add(tst);
     }
 
@@ -35,23 +35,24 @@ class _BooksPageState extends State<BooksPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Books Page'),
+        title: Text('Cards Page'),
       ),
       body: Center(
-        child: FutureBuilder<List<BookModel>>(
+        child: FutureBuilder<List<CardModel>>(
           future: _getBooksData(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               return ListView.builder(
-                  itemCount: _booksList.length,
+                  itemCount: _cardsList.length,
                   itemBuilder: (context, index) {
                     return TextButton(
                       onPressed: () async {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => CardsPage(
-                                  hash: _booksList[index].children ?? [])),
+                            builder: (context) =>
+                                LorePage(hash: _cardsList[index].loreHash),
+                          ),
                         );
                       },
                       child: Padding(
@@ -61,10 +62,10 @@ class _BooksPageState extends State<BooksPage> {
                             width: 50,
                             color: Colors.black,
                             child: Image.network(
-                                '${EndPoint.baseUrl}${_booksList[index].originalIcon}'),
+                                '${EndPoint.baseUrl}${_cardsList[index].originalIcon}'),
                           ),
                           title:
-                              SelectableText(_booksList[index].name ?? 'null!'),
+                              SelectableText(_cardsList[index].name ?? 'null!'),
                         ),
                       ),
                     );
